@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>编译命令篇</title>
+    <url>/2020/03/26/gcc%E4%B8%80%E4%BA%9B%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[<h2 id="gcc"><a href="#gcc" class="headerlink" title="gcc"></a>gcc</h2><a id="more"></a>
+<h3 id="参数-D"><a href="#参数-D" class="headerlink" title="参数 -D"></a>参数 -D</h3><p>-D 允许从编译程序命令行定义宏符号, 就是加一个宏进去.</p>
+<p>用法:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef P</span><br><span class="line">    printf(&quot;Hello\n&quot;);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">gcc -o main main.c -D P</span><br><span class="line">.&#x2F;main  &#x2F;&#x2F;打印Hello</span><br></pre></td></tr></table></figure></code></pre><p>在Makefile中我们可以通过宏定义来控制源程序的编译。只要在Makefile中的CFLAGS中通过选项-D来指定你于定义的宏即可。</p>
+<p>如:<br>CFLAGS += -D _YUQIANG</p>
+<h3 id="参数-I-L-l"><a href="#参数-I-L-l" class="headerlink" title="参数 -I -L -l"></a>参数 -I -L -l</h3><p>gcc -o hello hello.c -I /home/hello/include -L /home/hello/lib -lworld</p>
+<p>上面这句表示在编译hello.c时：</p>
+<p>-I /home/hello/include表示将/home/hello/include目录作为第一个寻找头文件的目录，寻找的顺序是：/home/hello/include–&gt;/usr/include–&gt;/usr/local/include</p>
+<p>-L /home/hello/lib表示将/home/hello/lib目录作为第一个寻找库文件的目录，寻找的顺序是：/home/hello/lib–&gt;/lib–&gt;/usr/lib–&gt;/usr/local/lib</p>
+<p> -lworld表示在上面的lib的路径中寻找libworld.so动态库文件（如果gcc编译选项中加入了“-static”表示寻找libworld.a静态库文件）</p>
+<h3 id="参数-Wall"><a href="#参数-Wall" class="headerlink" title="参数 -Wall"></a>参数 -Wall</h3><p>作用: 显示警告</p>
+]]></content>
+      <tags>
+        <tag>gcc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>makefile篇</title>
+    <url>/2020/03/26/makefile/</url>
+    <content><![CDATA[<h2 id="makefile的书写"><a href="#makefile的书写" class="headerlink" title="makefile的书写"></a>makefile的书写</h2><a id="more"></a>
+<h3 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h3><pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SRC     &#x3D; $(wildcard *.c)</span><br><span class="line">OBJ     &#x3D; $(patsubst %.c, %.o, $(SRC))</span><br><span class="line">TARGET  &#x3D; hello</span><br><span class="line">CC      &#x3D; gcc</span><br><span class="line">CFLAGS  &#x3D; -g</span><br><span class="line">LIB     &#x3D;</span><br><span class="line"></span><br><span class="line">$(TARGET):$(OBJ)</span><br><span class="line">    $(CC) $(CFLAGS) -o $@ $^</span><br><span class="line"></span><br><span class="line">.PHONY:</span><br><span class="line">clean:</span><br><span class="line">    rm -rf *.o $(TARGET)</span><br></pre></td></tr></table></figure></code></pre><h3 id="输入-改变参数"><a href="#输入-改变参数" class="headerlink" title="输入/改变参数"></a>输入/改变参数</h3><p><code>make TARGET=main</code></p>
+<p>main就会覆盖hello, 其他同理</p>
+]]></content>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>makefile篇</title>
+    <url>/2020/03/26/makefile%E4%B8%AD%E7%94%A8echo/</url>
+    <content><![CDATA[<h2 id="makefile中用echo"><a href="#makefile中用echo" class="headerlink" title="makefile中用echo"></a>makefile中用echo</h2><a id="more"></a>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">任意名称:</span><br><span class="line">    echo ...</span><br><span class="line">    @echo ...</span><br></pre></td></tr></table></figure></code></pre><p>不加@的会输出这条命令本身</p>
+]]></content>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>makefile篇</title>
+    <url>/2020/03/26/makefile%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h2 id="基本函数"><a href="#基本函数" class="headerlink" title="基本函数"></a>基本函数</h2><a id="more"></a>
+<p>1 wildcard</p>
+<p><code>$(wildcard 模式参数)</code></p>
+<p>列出当前目录下所有符合模式参数的文件名  返回目录下所有符合模式参数的文件名</p>
+<p><code>SRC = $(wildcard *.c)</code></p>
+<p>把当前目录所以.c文件名返回给SRC</p>
+<p>2 patsubst</p>
+<p><code>$(patsubset 模式参数, 参数1, 参数2)</code></p>
+<p>把参数2中复合模式参数的单词替换成参数1   返回被替换后的参数2</p>
+<p><code>$(patsubset %.c, %.o, $(SRC))</code></p>
+<p>从SRC中把任意.c文件名替换为.o文件名返回</p>
+]]></content>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>makefile篇</title>
+    <url>/2020/03/26/makefile%E9%80%9A%E9%85%8D%E7%AC%A6/</url>
+    <content><![CDATA[<h2 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h2><a id="more"></a>
+<p>$@  表示目标文件<br>$^  表示所有的依赖文件<br>$&lt;  表示第一个依赖文件<br>$?  表示比目标还要新的依赖文件列表</p>
+]]></content>
+      <tags>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell命令篇</title>
+    <url>/2020/03/26/ubuntu%E5%91%BD%E4%BB%A4%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h2 id="ubuntu18-04更新命令和无法获得锁的解决"><a href="#ubuntu18-04更新命令和无法获得锁的解决" class="headerlink" title="ubuntu18.04更新命令和无法获得锁的解决"></a>ubuntu18.04更新命令和无法获得锁的解决</h2><a id="more"></a>
+<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure></code></pre><h3 id="无法获得锁解决"><a href="#无法获得锁解决" class="headerlink" title="无法获得锁解决"></a>无法获得锁解决</h3><pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;lock-frontend</span><br></pre></td></tr></table></figure></code></pre>]]></content>
+      <tags>
+        <tag>ubuntu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++关键字篇</title>
+    <url>/2020/03/25/auto/</url>
+    <content><![CDATA[<h2 id="auto"><a href="#auto" class="headerlink" title="auto"></a>auto</h2><a id="more"></a>
+<p>作用: C++11中对关键字auto进行了重新定义，可以让编译器根据初始值类型自动推断变量的类型。<br>用法:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">auto a &#x3D; 0;&#x2F;&#x2F;推断为int</span><br><span class="line">auto b &#x3D; 0.0;&#x2F;&#x2F;推断为double</span><br><span class="line">auto c &#x3D; &#39;a&#39;;&#x2F;&#x2F;推断为char</span><br><span class="line">&#x2F;&#x2F;也可以推断出迭代器</span><br><span class="line">vector&lt;int&gt; v(&#123;1, 2, 3, 4, 5&#125;)</span><br><span class="line">auto iter &#x3D; v.begin();</span><br></pre></td></tr></table></figure></code></pre><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><p>1、使用auto关键字的变量必须有初始值。</p>
+<p>2.使用auto关键字声明变量的类型，不能自动推导出顶层的CV-qualifiers和引用类型，除非显示声明。</p>
+<p>3.使用auto关键字进行类型推导时，编译器会自动忽略顶层const，除非显示声明。</p>
+<p>4.对于数组类型，auto关键字会推导为指针类型，除非被声明为引用。</p>
+<p><a href="https://zouzhongliang.com/index.php/2019/06/10/c11-1/" target="_blank" rel="noopener">链接</a></p>
+]]></content>
+      <tags>
+        <tag>keyword</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++关键字篇</title>
+    <url>/2020/03/25/alignas%E5%92%8Calignof/</url>
+    <content><![CDATA[<h2 id="alignas和alignof"><a href="#alignas和alignof" class="headerlink" title="alignas和alignof"></a>alignas和alignof</h2><a id="more"></a>
+
+<h3 id="alignas"><a href="#alignas" class="headerlink" title="alignas"></a>alignas</h3><p>作用: 设置内存对齐方式<br>用法:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct alignas(2的次幂) name&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class alignas(2的次幂) name&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></code></pre><hr>
+<h3 id="alignof"><a href="#alignof" class="headerlink" title="alignof"></a>alignof</h3><p>作用: 返回对齐字节大小<br>返回值类型: size_t<br>用法:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct alignas(8) name&#123;</span><br><span class="line">    char a;</span><br><span class="line">    int b;</span><br><span class="line">&#125;;</span><br><span class="line">cout &lt;&lt; alignof(name) &lt;&lt; endl;</span><br></pre></td></tr></table></figure></code></pre><p>输出值为8</p>
+]]></content>
+      <tags>
+        <tag>keyword</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++关键字篇</title>
+    <url>/2020/03/25/const_cast/</url>
+    <content><![CDATA[<h2 id="const-cast"><a href="#const-cast" class="headerlink" title="const_cast"></a>const_cast</h2><a id="more"></a>
+<p>作用: 可改变以const或constexpr修饰的变量的值, 但原变量的值和地址均不变(编译器做了某些处理)<br>代码:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    const int a &#x3D; 10;</span><br><span class="line">    int *b &#x3D; const_cast&lt;int*&gt;(&amp;a);</span><br><span class="line">    *b &#x3D; 20;</span><br><span class="line">    printf(&quot;%x, %x, &amp;d, %d\n&quot;, &amp;a, b, a, *b);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+结果显示a和b的地址相同, 但a仍然是10, b却是20
+于是查看汇编, 发现a指向的地址的值的确改变了, 问题在传参进printf时
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    printf(&quot;%x, %x, &amp;d, %d\n&quot;, &amp;a, b, a, *b);</span><br><span class="line">0040D71E   mov         edx,dword ptr [ebp-8]</span><br><span class="line">0040D721   mov         eax,dword ptr [edx]</span><br><span class="line">0040D723   push        eax</span><br><span class="line">0040D724   push        0Ah</span><br><span class="line">0040D726   mov         ecx,dword ptr [ebp-8]</span><br><span class="line">0040D729   push        ecx</span><br><span class="line">0040D72A   lea         edx,[ebp-4]</span><br><span class="line">0040D72D   push        edx</span><br><span class="line">0040D72E   push        offset string &quot;%x %x %d  %d\n&quot; (00422fa4)</span><br><span class="line">0040D733   call        printf (00401060)</span><br></pre></td></tr></table></figure></code></pre><p>从右到左push进去参数, 第二个参数push了16进制的0Ah, 而地址仍是原来的地址</p>
+]]></content>
+      <tags>
+        <tag>keyword</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++关键字篇</title>
+    <url>/2020/03/25/constexpr/</url>
+    <content><![CDATA[<h2 id="constexper"><a href="#constexper" class="headerlink" title="constexper"></a>constexper</h2><a id="more"></a>
+<p>作用: constexpr可以用来修饰变量、函数、构造函数, 其值不能直接修改. 编译器在编译期就得到结果.<br>用法:</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">constexpr int fun1(int n)&#123;</span><br><span class="line">    return n+1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const int fun2(int n)&#123;</span><br><span class="line">    return n+1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int arr1[fun1(10)];</span><br><span class="line">    int arr2[fun2(10)];</span><br><span class="line">    cout &lt;&lt; sizeof(arr1) &lt;&lt; &quot; &quot; &lt;&lt; sizeof(arr2) &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre><p>codeblocks中编译通过, 结果均为44</p>
+]]></content>
+      <tags>
+        <tag>keyword</tag>
+      </tags>
+  </entry>
+</search>
